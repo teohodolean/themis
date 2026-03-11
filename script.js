@@ -2,7 +2,7 @@ const video = document.getElementById('video');
 const canvas = document.getElementById('overlay');
 const ctx = canvas.getContext('2d');
 
-// Iconițe și offset față
+// Iconițe
 const icons = [
     { emoji: "💬", dx: -50, dy: -50 },
     { emoji: "📷", dx: 50, dy: -50 },
@@ -28,7 +28,11 @@ async function setupCamera() {
 async function main() {
     await setupCamera();
 
-    const faceDetection = new FaceDetection({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}` });
+    // initializează MediaPipe Face Detection
+    const faceDetection = new FaceDetection({locateFile: (file) =>
+        `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`
+    });
+
     faceDetection.setOptions({
         model: 'short',
         minDetectionConfidence: 0.5
@@ -37,6 +41,8 @@ async function main() {
     faceDetection.onResults(results => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+        if (!results.detections) return;
+
         results.detections.forEach(detection => {
             const box = detection.boundingBox;
             const x = box.xCenter - box.width / 2;
@@ -44,7 +50,7 @@ async function main() {
             const width = box.width;
             const height = box.height;
 
-            // chenar
+            // Chenar
             ctx.strokeStyle = '#00ff00';
             ctx.lineWidth = 3;
             ctx.strokeRect(x, y, width, height);
@@ -52,11 +58,12 @@ async function main() {
             const cx = x + width / 2;
             const cy = y + height / 2;
 
-            // iconițe + linii animate
+            // Iconițe
             icons.forEach(icon => {
                 const targetX = cx + icon.dx;
                 const targetY = cy + icon.dy;
 
+                // Linie
                 ctx.strokeStyle = '#0ff';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
@@ -64,14 +71,16 @@ async function main() {
                 ctx.lineTo(targetX, targetY);
                 ctx.stroke();
 
+                // Icon
                 ctx.font = "30px Arial";
                 ctx.fillText(icon.emoji, targetX - 15, targetY + 10);
             });
         });
     });
 
+    // Camera MediaPipe pentru video live
     const cameraMP = new Camera(video, {
-        onFrame: async () => { await faceDetection.send({ image: video }); },
+        onFrame: async () => { await faceDetection.send({image: video}); },
         width: 1280,
         height: 720
     });
