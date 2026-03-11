@@ -2,10 +2,10 @@ const video = document.getElementById('video');
 const canvas = document.getElementById('overlay');
 const ctx = canvas.getContext('2d');
 
-let model;
-
 async function setupCamera() {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }});
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' } // camera spate
+    });
     video.srcObject = stream;
     return new Promise(resolve => {
         video.onloadedmetadata = () => {
@@ -17,55 +17,65 @@ async function setupCamera() {
     });
 }
 
-async function loadModel() {
-    model = await cocoSsd.load();
-}
-
-function drawPersonBox(person) {
-    const x = person.bbox[0];
-    const y = person.bbox[1];
-    const width = person.bbox[2];
-    const height = person.bbox[3];
-
-    // chenar
-    ctx.strokeStyle = '#00ff00';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(x, y, width, height);
-
-    // linii catre iconite
-    ctx.strokeStyle = '#00ffff';
-    ctx.beginPath();
-    ctx.moveTo(x + width / 2, y);
-    ctx.lineTo(x - 50, y - 50); // spre icon1
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(x + width / 2, y);
-    ctx.lineTo(x + width + 50, y - 50); // spre icon2
-    ctx.stroke();
-
-    // iconite
-    ctx.font = "30px Arial";
-    ctx.fillText("💬", x - 70, y - 60);
-    ctx.fillText("📷", x + width + 30, y - 60);
-}
-
-async function detectFrame() {
-    const predictions = await model.detect(video);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    predictions.forEach(pred => {
-        if (pred.class === 'person') {
-            drawPersonBox(pred);
-        }
-    });
-
-    requestAnimationFrame(detectFrame);
-}
+// Iconițe și offset-uri relative la față
+const icons = [
+    { emoji: "💬", dx: -50, dy: -50 },
+    { emoji: "📷", dx: 50, dy: -50 },
+    { emoji: "📍", dx: -50, dy: 50 },
+    { emoji: "❤️", dx: 50, dy: 50 },
+];
 
 async function main() {
     await setupCamera();
-    await loadModel();
+
+    const model = await faceLandmarksDetection.load(
+        faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
+    );
+
+    async function detectFrame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const predictions = await model.estimateFaces({ input: video });
+
+        predictions.forEach(face => {
+            // bounding box față
+            const start = face.boundingBox.topLeft;
+            const end = face.boundingBox.bottomRight;
+            const x = start[0], y = start[1];
+            const width = end[0] - start[0];
+            const height = end[1] - start[1];
+
+            // chenar
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(x, y, width, height);
+
+            // centru față
+            const cx = x + width / 2;
+            const cy = y + height / 2;
+
+            // iconițe
+            icons.forEach(icon => {
+                const targetX = cx + icon.dx;
+                const targetY = cy + icon.dy;
+
+                // linie
+                ctx.strokeStyle = '#0ff';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(targetX, targetY);
+                ctx.stroke();
+
+                // icon
+                ctx.font = "30px Arial";
+                ctx.fillText(icon.emoji, targetX - 15, targetY + 10);
+            });
+        });
+
+        requestAnimationFrame(detectFrame);
+    }
+
     detectFrame();
 }
 
