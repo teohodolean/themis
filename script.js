@@ -17,7 +17,7 @@ async function setupCamera() {
     });
 }
 
-// Iconițe și offset-uri relative la față
+// Iconițe
 const icons = [
     { emoji: "💬", dx: -50, dy: -50 },
     { emoji: "📷", dx: 50, dy: -50 },
@@ -28,6 +28,7 @@ const icons = [
 async function main() {
     await setupCamera();
 
+    // Încarcă modelul de față
     const model = await faceLandmarksDetection.load(
         faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
     );
@@ -38,7 +39,8 @@ async function main() {
         const predictions = await model.estimateFaces({ input: video });
 
         predictions.forEach(face => {
-            // bounding box față
+            if (!face.boundingBox) return;
+
             const start = face.boundingBox.topLeft;
             const end = face.boundingBox.bottomRight;
             const x = start[0], y = start[1];
@@ -50,11 +52,9 @@ async function main() {
             ctx.lineWidth = 3;
             ctx.strokeRect(x, y, width, height);
 
-            // centru față
             const cx = x + width / 2;
             const cy = y + height / 2;
 
-            // iconițe
             icons.forEach(icon => {
                 const targetX = cx + icon.dx;
                 const targetY = cy + icon.dy;
