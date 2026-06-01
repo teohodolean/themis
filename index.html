@@ -32,7 +32,6 @@
     height: 100dvh;
   }
 
-  /* ── HEADER ── */
   #header {
     position: fixed; top:0; left:0; right:0; z-index:100;
     display: none;
@@ -59,12 +58,10 @@
     transition: background 0.4s, box-shadow 0.4s;
   }
 
-  /* ── CAMERA ── */
   #camera-wrap { display:none; position:relative; width:100vw; height:100dvh; }
   #video { width:100%; height:100%; object-fit:cover; }
   #overlay { position:absolute; inset:0; pointer-events:none; }
 
-  /* ── LOADING ── */
   #loading {
     position:fixed; inset:0; background: var(--bg);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -84,7 +81,6 @@
   #bar { height:100%; width:0; border-radius:4px; background:linear-gradient(90deg,#7c3aed,#ec4899); transition:width 0.4s; }
   #load-txt { font-size:11px; color:var(--muted); letter-spacing:0.3px; }
 
-  /* ── START SCREEN ── */
   #start-screen {
     display:none; position:fixed; inset:0; z-index:200;
     flex-direction:column; align-items:center; justify-content:center;
@@ -119,7 +115,6 @@
   }
   #start-btn:active { transform:scale(0.96); box-shadow:0 4px 16px rgba(124,58,237,0.3); }
 
-  /* ── IDENTITY SCANNED FLASH ── */
   #scan-flash {
     display:none; position:fixed; inset:0; z-index:200;
     align-items:center; justify-content:center;
@@ -147,7 +142,6 @@
     100% { opacity:0; transform:scale(1.02); }
   }
 
-  /* ── FOOTPRINT TOOLTIP ── */
   #footprint-tip {
     display:none; position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
     background: rgba(15,10,30,0.92); border:1px solid rgba(168,85,247,0.35);
@@ -159,7 +153,6 @@
   #footprint-tip p { font-size:12px; line-height:1.7; color:var(--muted); }
   #footprint-tip strong { color:#a855f7; }
 
-  /* ── NO FACE ── */
   #no-face {
     display:none; position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
     background:rgba(15,10,30,0.75); border:1px solid rgba(255,255,255,0.1);
@@ -170,7 +163,6 @@
   }
   @keyframes fp { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* ── ZOOM CONTROL ── */
   #zoom-ctrl {
     display:none; position:fixed; right:14px; top:50%; transform:translateY(-50%);
     z-index:100; flex-direction:column; align-items:center; gap:8px;
@@ -190,7 +182,6 @@
     color:rgba(168,85,247,0.7); text-align:center; min-width:40px;
   }
 
-  /* ── FLIP BUTTON ── */
   #flip-btn {
     display:none; position:fixed; left:14px; top:50%; transform:translateY(-50%);
     width:46px; height:46px; z-index:100;
@@ -203,7 +194,6 @@
   }
   #flip-btn:active { background:rgba(168,85,247,0.2); }
 
-  /* ── CAPTURE BUTTON ── */
   #capture-btn {
     display:none; position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
     z-index:100; width:60px; height:60px;
@@ -215,6 +205,88 @@
   }
   #capture-btn:active { background:rgba(168,85,247,0.2); }
   #capture-btn svg { pointer-events:none; }
+
+  /* ── ICON DETAIL PANEL ── */
+  #icon-panel {
+    display:none;
+    position:fixed;
+    z-index:500;
+    min-width:240px;
+    max-width:300px;
+    background: rgba(12,8,28,0.97);
+    border: 1px solid rgba(168,85,247,0.35);
+    border-radius:18px;
+    padding:0;
+    backdrop-filter:blur(24px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(168,85,247,0.1);
+    overflow:hidden;
+    animation: panelPop 0.22s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    pointer-events:all;
+  }
+  @keyframes panelPop {
+    from { opacity:0; transform:scale(0.88); }
+    to   { opacity:1; transform:scale(1); }
+  }
+  #panel-header {
+    display:flex; align-items:center; gap:12px;
+    padding:14px 16px 12px;
+    border-bottom:1px solid rgba(255,255,255,0.07);
+  }
+  #panel-icon-wrap {
+    width:40px; height:40px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  #panel-icon-wrap svg { width:22px; height:22px; }
+  #panel-title { font-family:'Nunito',sans-serif; font-weight:800; font-size:15px; color:#fff; }
+  #panel-subtitle { font-size:11px; color:rgba(255,255,255,0.45); margin-top:2px; }
+  #panel-close {
+    margin-left:auto; width:28px; height:28px; border-radius:50%;
+    background:rgba(255,255,255,0.07); border:none; cursor:pointer;
+    color:rgba(255,255,255,0.5); font-size:16px; display:flex;
+    align-items:center; justify-content:center;
+    transition:background 0.15s;
+    flex-shrink:0;
+  }
+  #panel-close:hover { background:rgba(255,255,255,0.15); color:#fff; }
+  #panel-stat {
+    display:flex; align-items:center; gap:16px;
+    padding:12px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+  }
+  .pstat { text-align:center; }
+  .pstat-val { font-family:'Nunito',sans-serif; font-weight:800; font-size:18px; }
+  .pstat-lbl { font-size:10px; color:rgba(255,255,255,0.4); letter-spacing:0.5px; margin-top:2px; }
+  #panel-rows { padding:8px 0 6px; }
+  .prow {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 16px;
+    transition:background 0.1s;
+  }
+  .prow:hover { background:rgba(255,255,255,0.04); }
+  .prow-avatar {
+    width:32px; height:32px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; flex-shrink:0;
+  }
+  .prow-name { font-size:13px; font-weight:600; color:rgba(255,255,255,0.9); }
+  .prow-detail { font-size:11px; color:rgba(255,255,255,0.4); margin-top:1px; }
+  .prow-meta { margin-left:auto; text-align:right; flex-shrink:0; }
+  .prow-meta-val { font-size:12px; font-weight:600; }
+  .prow-meta-lbl { font-size:10px; color:rgba(255,255,255,0.35); }
+  .pill {
+    display:inline-block; padding:2px 8px; border-radius:20px;
+    font-size:10px; font-weight:700; letter-spacing:0.3px;
+  }
+  .pill-in  { background:rgba(74,222,128,0.18); color:#4ade80; }
+  .pill-out { background:rgba(168,85,247,0.18); color:#c084fc; }
+  .pill-miss{ background:rgba(248,113,113,0.18); color:#f87171; }
+  #panel-footer {
+    padding:10px 16px;
+    border-top:1px solid rgba(255,255,255,0.05);
+    font-size:11px; color:rgba(255,255,255,0.3);
+    text-align:center; letter-spacing:0.3px;
+  }
 </style>
 </head>
 <body>
@@ -243,7 +315,7 @@
     </svg>
   </div>
   <h1>What does your face say about your digital life?</h1>
-  <p class="subtitle">Point your camera at someone and discover their digital footprint in seconds.</p>
+  <p class="subtitle">Point your camera at someone and discover their digital footprint in seconds. Tap any icon to explore.</p>
   <button id="start-btn" onclick="startCamera()">✦ Scan a Face</button>
 </div>
 
@@ -269,7 +341,7 @@
 
 <!-- FOOTPRINT TOOLTIP -->
 <div id="footprint-tip">
-  <p><strong>This is your digital footprint.</strong><br>Every face carries invisible connections — social networks, messaging platforms, websites. Here's what yours looks like.</p>
+  <p><strong>This is your digital footprint.</strong><br>Every face carries invisible connections — social networks, messaging platforms, websites. Tap any icon to explore.</p>
 </div>
 
 <!-- NO FACE -->
@@ -299,8 +371,344 @@
   </svg>
 </button>
 
+<!-- ICON DETAIL PANEL -->
+<div id="icon-panel">
+  <div id="panel-header">
+    <div id="panel-icon-wrap"></div>
+    <div>
+      <div id="panel-title"></div>
+      <div id="panel-subtitle"></div>
+    </div>
+    <button id="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div id="panel-stat"></div>
+  <div id="panel-rows"></div>
+  <div id="panel-footer"></div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
+// ─── ICON DETAIL DATA GENERATORS ──────────────────────────────────────────────
+const FIRST_NAMES = ['Alex','Jordan','Sam','Morgan','Casey','Riley','Taylor','Blake','Drew','Avery','Quinn','Jamie','Reese','Skylar','Logan'];
+const LAST_I = ['M','J','S','K','T','B','D','A','R','C'];
+
+function rn(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function fmtNum(n){
+  if(n>=1000000)return(n/1000000).toFixed(1)+'M';
+  if(n>=1000)return(n/1000).toFixed(1)+'K';
+  return String(n);
+}
+function randName(){return pick(FIRST_NAMES)+' '+pick(LAST_I)+'.';}
+function timeAgo(){
+  const opts=['Just now','2 min ago','8 min ago','23 min ago','1 hr ago','3 hrs ago','Yesterday','2 days ago'];
+  return pick(opts);
+}
+
+function genPhoneData(icon) {
+  const types=['in','out','miss'];
+  const durations=['0:32','1:14','2:07','4:51','0:58','7:23','12:04','0:17'];
+  const rows=[];
+  for(let i=0;i<5;i++){
+    const t=pick(types);
+    rows.push({
+      name:randName(),
+      detail: t==='miss'?'Missed call': (t==='in'?'Incoming':'Outgoing')+' · '+pick(durations),
+      type:t,
+      meta: timeAgo(),
+      metaLbl:'',
+      initColor: t==='in'?'rgba(74,222,128,0.2)':t==='out'?'rgba(168,85,247,0.2)':'rgba(248,113,113,0.2)',
+      initText: t==='in'?'#4ade80':t==='out'?'#c084fc':'#f87171'
+    });
+  }
+  const totalMin=rn(20,340);
+  return {
+    stats:[
+      {val:String(rn(80,650)),lbl:'contacts'},
+      {val:String(rn(3,18)),lbl:'calls today'},
+      {val:Math.floor(totalMin/60)+'h '+totalMin%60+'m',lbl:'call time/wk'}
+    ],
+    rows,
+    footer:'Tap a contact to call'
+  };
+}
+
+function genMessagesData(icon) {
+  const rows=[];
+  const emojis=['😂','❤️','👍','🔥','✅','🙏','😅','🤔'];
+  for(let i=0;i<5;i++){
+    const unread=rn(0,12);
+    rows.push({
+      name:randName(),
+      detail:pick(emojis)+' '+pick(['Hey!','Did you see this?','lol ok','On my way','sounds good','Can we talk?','sent a photo']),
+      type:'msg',
+      meta:unread?String(unread):'',
+      metaLbl: unread?'new':'',
+      initColor:'rgba(56,189,248,0.2)',
+      initText:'#38bdf8'
+    });
+  }
+  return {
+    stats:[
+      {val:fmtNum(rn(1,47)),lbl:'unread'},
+      {val:String(rn(8,34)),lbl:'threads'},
+      {val:String(rn(2,9)),lbl:'groups'}
+    ],
+    rows,
+    footer:'iMessage & SMS'
+  };
+}
+
+function genInstagramData(icon) {
+  const rows=[];
+  for(let i=0;i<5;i++){
+    const likes=rn(12,4800);
+    rows.push({
+      name:'@'+randName().replace(' ','').replace('.','').toLowerCase(),
+      detail:pick(['Liked your post','Started following you','Commented: "🔥🔥"','Tagged you in a story','Replied to your reel']),
+      type:'ig',
+      meta:fmtNum(likes),
+      metaLbl:'likes',
+      initColor:'rgba(244,114,182,0.2)',
+      initText:'#f472b6'
+    });
+  }
+  return {
+    stats:[
+      {val:fmtNum(rn(800,94000)),lbl:'followers'},
+      {val:fmtNum(rn(200,1200)),lbl:'following'},
+      {val:String(rn(40,820)),lbl:'posts'}
+    ],
+    rows,
+    footer:'Recent activity'
+  };
+}
+
+function genLinkedInData(icon) {
+  const roles=['Software Eng.','Product Mgr','Designer','CTO','Founder','Marketing Lead'];
+  const cos=['Google','Meta','Stripe','Acme Corp','Notion','Linear'];
+  const rows=[];
+  for(let i=0;i<5;i++){
+    rows.push({
+      name:randName(),
+      detail:pick(roles)+' at '+pick(cos),
+      type:'li',
+      meta:timeAgo(),
+      metaLbl:'viewed',
+      initColor:'rgba(96,165,250,0.2)',
+      initText:'#60a5fa'
+    });
+  }
+  return {
+    stats:[
+      {val:fmtNum(rn(200,4900)),lbl:'connections'},
+      {val:String(rn(10,180)),lbl:'endorsements'},
+      {val:fmtNum(rn(300,12000)),lbl:'profile views'}
+    ],
+    rows,
+    footer:'Recent profile visitors'
+  };
+}
+
+function genXData(icon) {
+  const rows=[];
+  for(let i=0;i<5;i++){
+    const likes=rn(5,3200);
+    rows.push({
+      name:'@'+randName().replace(' ','').replace('.','').toLowerCase(),
+      detail:pick(['Retweeted your post','Liked your reply','Quoted your thread','Mentioned you','Started following']),
+      type:'x',
+      meta:fmtNum(likes),
+      metaLbl:'',
+      initColor:'rgba(226,232,240,0.15)',
+      initText:'#e2e8f0'
+    });
+  }
+  return {
+    stats:[
+      {val:fmtNum(rn(50,12000)),lbl:'followers'},
+      {val:String(rn(800,28000)),lbl:'tweets'},
+      {val:fmtNum(rn(200,9000)),lbl:'impressions/mo'}
+    ],
+    rows,
+    footer:'Recent interactions'
+  };
+}
+
+function genTikTokData(icon) {
+  const rows=[];
+  for(let i=0;i<5;i++){
+    rows.push({
+      name:'@'+randName().replace(' ','').replace('.','').toLowerCase(),
+      detail:pick(['Dueted your video','Liked 3 of your videos','Left a comment','Shared to story','Followed you']),
+      type:'tt',
+      meta:fmtNum(rn(500,88000)),
+      metaLbl:'views',
+      initColor:'rgba(249,168,212,0.2)',
+      initText:'#f9a8d4'
+    });
+  }
+  return {
+    stats:[
+      {val:fmtNum(rn(1200,880000)),lbl:'likes'},
+      {val:fmtNum(rn(400,95000)),lbl:'followers'},
+      {val:String(rn(12,280)),lbl:'videos'}
+    ],
+    rows,
+    footer:'Recent activity'
+  };
+}
+
+function genWebsiteData(icon) {
+  const pages=['/blog','/','/about','/projects','/contact','/portfolio'];
+  const refs=['google.com','twitter.com','linkedin.com','direct','github.com'];
+  const rows=[];
+  for(let i=0;i<5;i++){
+    const v=rn(80,4200);
+    rows.push({
+      name:pick(pages),
+      detail:'via '+pick(refs),
+      type:'web',
+      meta:fmtNum(v),
+      metaLbl:'visits',
+      initColor:'rgba(251,191,36,0.2)',
+      initText:'#fbbf24'
+    });
+  }
+  return {
+    stats:[
+      {val:fmtNum(rn(500,48000)),lbl:'monthly visits'},
+      {val:String(rn(1,12))+'s',lbl:'avg. time'},
+      {val:String(rn(28,74))+'%',lbl:'bounce rate'}
+    ],
+    rows,
+    footer:'Google Analytics · last 30 days'
+  };
+}
+
+function genNFCData(icon) {
+  const devices=['iPhone 15','AirDrop','Android','MacBook','NFC Tag'];
+  const actions=['Shared contact','Shared social links','Opened portfolio','Shared vCard','Tapped payment'];
+  const rows=[];
+  for(let i=0;i<5;i++){
+    rows.push({
+      name:randName(),
+      detail:pick(actions)+' via '+pick(devices),
+      type:'nfc',
+      meta:timeAgo(),
+      metaLbl:'',
+      initColor:'rgba(192,132,252,0.2)',
+      initText:'#c084fc'
+    });
+  }
+  return {
+    stats:[
+      {val:String(rn(5,320)),lbl:'total shares'},
+      {val:String(rn(1,12)),lbl:'this week'},
+      {val:String(rn(2,8)),lbl:'devices paired'}
+    ],
+    rows,
+    footer:'Wireless contact sharing'
+  };
+}
+
+const DATA_GEN = {
+  'Phone':    genPhoneData,
+  'Messages': genMessagesData,
+  'Instagram':genInstagramData,
+  'LinkedIn': genLinkedInData,
+  'X':        genXData,
+  'TikTok':   genTikTokData,
+  'Website':  genWebsiteData,
+  'NFC':      genNFCData,
+};
+
+// ─── PANEL RENDERING ──────────────────────────────────────────────────────────
+let panelOpen = false;
+
+function openIconPanel(icon, screenX, screenY) {
+  const gen = DATA_GEN[icon.label];
+  if (!gen) return;
+  const data = gen(icon);
+
+  // Header
+  document.getElementById('panel-icon-wrap').style.background =
+    'linear-gradient(135deg,'+hexA(icon.grad[0],0.3)+','+hexA(icon.grad[1],0.2)+')';
+  document.getElementById('panel-icon-wrap').innerHTML =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="'+icon.color+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+icon.path+'"/></svg>';
+  document.getElementById('panel-title').textContent = icon.label;
+  document.getElementById('panel-title').style.color = icon.color;
+  document.getElementById('panel-subtitle').textContent = icon.metricValue + ' ' + icon.metricLabel;
+
+  // Stats
+  const statEl = document.getElementById('panel-stat');
+  statEl.innerHTML = data.stats.map(s=>`
+    <div class="pstat" style="flex:1">
+      <div class="pstat-val" style="color:${icon.color}">${s.val}</div>
+      <div class="pstat-lbl">${s.lbl}</div>
+    </div>
+  `).join('<div style="width:1px;background:rgba(255,255,255,0.07);height:32px;align-self:center"></div>');
+
+  // Rows
+  const rowsEl = document.getElementById('panel-rows');
+  rowsEl.innerHTML = data.rows.map(r => {
+    const initials = r.name.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+    let metaHtml = '';
+    if (r.type === 'in') metaHtml = `<span class="pill pill-in">Incoming</span>`;
+    else if (r.type === 'out') metaHtml = `<span class="pill pill-out">Outgoing</span>`;
+    else if (r.type === 'miss') metaHtml = `<span class="pill pill-miss">Missed</span>`;
+    else if (r.meta) metaHtml = `<div class="prow-meta-val" style="color:${icon.color}">${r.meta}</div>${r.metaLbl?`<div class="prow-meta-lbl">${r.metaLbl}</div>`:''}`;
+
+    return `<div class="prow">
+      <div class="prow-avatar" style="background:${r.initColor};color:${r.initText}">${initials}</div>
+      <div style="min-width:0;flex:1">
+        <div class="prow-name">${r.name}</div>
+        <div class="prow-detail">${r.detail}</div>
+      </div>
+      <div class="prow-meta" style="min-width:60px">${metaHtml}</div>
+    </div>`;
+  }).join('');
+
+  // For phone calls: add time metadata
+  if (icon.label === 'Phone') {
+    const pillRows = rowsEl.querySelectorAll('.prow');
+    data.rows.forEach((r,i)=>{
+      const metaDiv = pillRows[i].querySelector('.prow-meta');
+      const timeDiv = document.createElement('div');
+      timeDiv.style.cssText = 'font-size:10px;color:rgba(255,255,255,0.3);margin-top:3px;text-align:right';
+      timeDiv.textContent = r.meta;
+      metaDiv.appendChild(timeDiv);
+    });
+  }
+
+  document.getElementById('panel-footer').textContent = data.footer;
+
+  // Position panel smart — avoid going off screen
+  const panel = document.getElementById('icon-panel');
+  panel.style.display = 'block';
+  panel.style.animation = 'none';
+  panel.offsetHeight; // reflow
+  panel.style.animation = 'panelPop 0.22s cubic-bezier(0.34,1.56,0.64,1) forwards';
+
+  const PW = 270, PH = 340;
+  let px = screenX - PW / 2;
+  let py = screenY - PH - 16;
+  if (px < 8) px = 8;
+  if (px + PW > window.innerWidth - 8) px = window.innerWidth - PW - 8;
+  if (py < 60) py = screenY + 16;
+  if (py + PH > window.innerHeight - 8) py = window.innerHeight - PH - 8;
+
+  panel.style.left = px + 'px';
+  panel.style.top  = py + 'px';
+  panelOpen = true;
+}
+
+function closePanel() {
+  document.getElementById('icon-panel').style.display = 'none';
+  panelOpen = false;
+  activeIconHit = null;
+}
+
 // ─── ICONS ────────────────────────────────────────────────────────────────────
 const ALL_ICONS = [
   { label:'Messages',  color:'#38bdf8', grad:['#38bdf8','#6366f1'],
@@ -331,18 +739,19 @@ const ALL_ICONS = [
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let videoEl, canvasEl, ctx;
-let domStatusDot, domStatusText, domNoFace;  // cached DOM refs
+let domStatusDot, domStatusText, domNoFace;
 
-// Multi-face tracking. Each entry:
-// { id, box, target, confidence, icons, iconProgress, masterProgress, tipTimer, ripples }
 let faces = [];
 let nextFaceId = 0;
-let lockedFaceId = -1;  // user-pinned face ID (-1 = none)
+let lockedFaceId = -1;
+
+// Track icon hit regions for click detection
+// Each entry: { faceId, iconIndex, screenX, screenY, icon, progress }
+let iconHitRegions = [];
+let activeIconHit = null;
 
 let tick = 0, lastFrameTime = 0;
 let modelsReady = false, isDetecting = false, isFrontCamera = false;
-
-// Flash + tip shown once per session
 let globalFlashShown = false, globalTipShown = false;
 
 // ─── ZOOM ─────────────────────────────────────────────────────────────────────
@@ -440,12 +849,11 @@ async function startCamera() {
   canvasEl = document.getElementById('overlay');
   ctx      = canvasEl.getContext('2d');
 
-  // Cache DOM refs used every animation frame
   domStatusDot  = document.getElementById('status-dot');
   domStatusText = document.getElementById('status-text');
   domNoFace     = document.getElementById('no-face');
 
-  await initStream(false);  // prefer rear camera
+  await initStream(false);
 
   canvasEl.width  = window.innerWidth;
   canvasEl.height = window.innerHeight;
@@ -462,7 +870,6 @@ async function startCamera() {
     canvasEl.height = window.innerHeight;
   });
 
-  // Tap-to-lock (single-finger tap)
   canvasEl.addEventListener('click', handleTap);
   canvasEl.addEventListener('touchend', e => {
     if (e.changedTouches.length === 1 && e.touches.length === 0) {
@@ -471,7 +878,6 @@ async function startCamera() {
     }
   }, { passive: false });
 
-  // Pinch-to-zoom
   let lastPinchDist = 0;
   canvasEl.addEventListener('touchstart', e => {
     if (e.touches.length === 2)
@@ -537,18 +943,44 @@ async function flipCamera() {
   btn.disabled = true;
   faces = [];
   lockedFaceId = -1;
+  iconHitRegions = [];
   globalFlashShown = false;
   globalTipShown   = false;
+  closePanel();
   await initStream(!isFrontCamera);
   btn.style.opacity = '1';
   btn.disabled = false;
 }
 
-// ─── TAP-TO-LOCK ──────────────────────────────────────────────────────────────
+// ─── TAP HANDLING ─────────────────────────────────────────────────────────────
 function handleTap(e) {
   const rect = canvasEl.getBoundingClientRect();
   const tx = e.clientX - rect.left;
   const ty = e.clientY - rect.top;
+
+  // 1. Close panel if open and click not on panel
+  if (panelOpen) {
+    const panel = document.getElementById('icon-panel');
+    const pr = panel.getBoundingClientRect();
+    if (e.clientX >= pr.left && e.clientX <= pr.right &&
+        e.clientY >= pr.top  && e.clientY <= pr.bottom) return;
+    closePanel();
+    return;
+  }
+
+  // 2. Check icon hit regions (icons are 30px radius tap target)
+  const ICON_HIT = 38;
+  for (const hit of iconHitRegions) {
+    if (hit.progress < 0.5) continue;
+    const dist = Math.hypot(tx - hit.sx, ty - hit.sy);
+    if (dist < ICON_HIT) {
+      activeIconHit = hit;
+      openIconPanel(hit.icon, hit.sx, hit.sy);
+      return;
+    }
+  }
+
+  // 3. Otherwise handle face lock
   const pad = 24;
   let tapped = null;
   for (const f of faces) {
@@ -566,8 +998,6 @@ function captureScreenshot() {
   const tmp = document.createElement('canvas');
   tmp.width = W; tmp.height = H;
   const tc = tmp.getContext('2d');
-
-  // Reproduce mirror + CSS zoom on the raw video frame
   tc.save();
   tc.translate(W / 2, H / 2);
   if (isFrontCamera) tc.scale(-1, 1);
@@ -576,7 +1006,6 @@ function captureScreenshot() {
   tc.drawImage(videoEl, 0, 0, W, H);
   tc.restore();
   tc.drawImage(canvasEl, 0, 0);
-
   tmp.toBlob(blob => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -584,8 +1013,6 @@ function captureScreenshot() {
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     setTimeout(() => URL.revokeObjectURL(url), 5000);
   }, 'image/png');
-
-  // White flash feedback
   const flash = document.createElement('div');
   flash.style.cssText = 'position:fixed;inset:0;background:#fff;opacity:0.45;z-index:9999;pointer-events:none;transition:opacity 0.4s';
   document.body.appendChild(flash);
@@ -601,18 +1028,11 @@ function pickIconsForFace() {
   const icons = [...ALL_ICONS]
     .sort(() => Math.random() - 0.5)
     .slice(0, count)
-    .map(ic => ({ ...ic, metricValue: fmtNum(randInt(ic.min, ic.max)) }));
+    .map(ic => ({ ...ic, metricValue: fmtNum(rn(ic.min, ic.max)) }));
   return { icons, iconProgress: icons.map(() => 0) };
 }
 
-function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
-function fmtNum(n) {
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
-  return String(n);
-}
-
-// ─── DETECTION (multi-face) ───────────────────────────────────────────────────
+// ─── DETECTION ────────────────────────────────────────────────────────────────
 async function runDetection() {
   if (!modelsReady || !videoEl || videoEl.readyState < 2 || isDetecting) return;
   isDetecting = true;
@@ -627,7 +1047,6 @@ async function runDetection() {
     const mapOffX  = (cw - vw * mapScale) / 2;
     const mapOffY  = (ch - vh * mapScale) / 2;
 
-    // Map detections to canvas coords, accounting for mirror + CSS zoom
     const newBoxes = dets.map(det => {
       const b = det.box;
       let x = b.x * mapScale + mapOffX;
@@ -643,7 +1062,6 @@ async function runDetection() {
       return { x, y, w, h };
     });
 
-    // Greedy nearest-centroid face matching
     const faceMatched = new Array(faces.length).fill(false);
     const detUsed     = new Array(newBoxes.length).fill(false);
 
@@ -673,7 +1091,6 @@ async function runDetection() {
       }
     }
 
-    // Create new face entries (cap at 8)
     for (let di = 0; di < newBoxes.length; di++) {
       if (!detUsed[di] && faces.length < 8) {
         const { icons, iconProgress } = pickIconsForFace();
@@ -710,7 +1127,7 @@ function showFootprintTip() {
   }, 4500);
 }
 
-// ─── RIPPLE SYSTEM ────────────────────────────────────────────────────────────
+// ─── RIPPLE ───────────────────────────────────────────────────────────────────
 function spawnRipple(arr, cx, cy, color) {
   arr.push({ cx, cy, r: 0, maxR: 80, life: 1, color });
 }
@@ -745,6 +1162,9 @@ function renderLoop(now) {
   const W = canvasEl.width, H = canvasEl.height;
   ctx.clearRect(0, 0, W, H);
 
+  // Reset icon hit regions each frame
+  iconHitRegions = [];
+
   const anyDetected = faces.some(f => f.confidence >= 4);
   const anyLocked   = faces.some(f => f.confidence >= 8);
   const statusLabel = anyLocked ? 'Locked ✓' : anyDetected ? 'Tracking…' : 'Scanning…';
@@ -773,7 +1193,6 @@ function renderLoop(now) {
         f.iconProgress[i] = Math.min(Math.max((f.masterProgress - start) / (1 - start * 0.5), 0), 1);
       });
 
-      // Global flash + tip (once per session)
       if (locked && !globalFlashShown && f.masterProgress > 0.8) {
         globalFlashShown = true;
         showScanFlash();
@@ -817,14 +1236,12 @@ function drawAR(W, H, face, locked) {
   const CL  = 28;
   const pinned = face.id === lockedFaceId;
 
-  // Three color states: locked (green) → pinned (amber) → tracking (purple)
   const boxColor = locked ? '#4ade80' : pinned ? '#f59e0b' : '#a855f7';
   const boxGlow  = locked ? 20 : 12;
 
   ctx.save();
   ctx.globalAlpha = mp;
 
-  // ── Corner brackets ──
   ctx.strokeStyle = boxColor;
   ctx.lineWidth   = 3;
   ctx.shadowColor = boxColor;
@@ -841,7 +1258,6 @@ function drawAR(W, H, face, locked) {
     ctx.stroke();
   });
 
-  // ── State label ──
   if (locked || pinned) {
     ctx.font = '600 10px "Space Grotesk",sans-serif';
     ctx.fillStyle = boxColor; ctx.textAlign = 'center';
@@ -849,13 +1265,11 @@ function drawAR(W, H, face, locked) {
     ctx.fillText(locked ? '✓ Locked' : '⊙ Pinned', cx, by - 8);
   }
 
-  // ── Subtle face box fill ──
   ctx.fillStyle = hexA(boxColor, 0.04);
   ctx.shadowBlur = 0;
   roundRect(ctx, bx, by, bw, bh, 8);
   ctx.fill();
 
-  // ── Dashed border ──
   ctx.setLineDash([4, 8]);
   ctx.strokeStyle = hexA(boxColor, 0.25);
   ctx.lineWidth = 1;
@@ -863,7 +1277,6 @@ function drawAR(W, H, face, locked) {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // ── Scan sweep ──
   const sy = by + (tick * 1.5) % bh;
   const sg = ctx.createLinearGradient(0, sy-20, 0, sy+6);
   sg.addColorStop(0, hexA(boxColor, 0));
@@ -871,10 +1284,8 @@ function drawAR(W, H, face, locked) {
   ctx.fillStyle = sg; ctx.shadowBlur = 0;
   ctx.fillRect(bx+1, Math.max(by+1, sy-20), bw-2, Math.min(26, sy - by + 20));
 
-  // ── Icons + connecting lines ──
   const icons = face.icons;
   const n     = icons.length;
-  // Ensure R is always beyond the face edge (handles CSS zoom correctly)
   const baseR = Math.min(W, H) * 0.40;
   const edge  = Math.max(bw, bh) / 2 + pad + 4;
   const R     = Math.max(baseR, edge + 72);
@@ -892,7 +1303,17 @@ function drawAR(W, H, face, locked) {
     const px = ex + (ix - ex) * ip;
     const py = ey + (iy - ey) * ip;
 
-    // Connecting line with gradient
+    // Store icon hit region for click detection
+    if (ip > 0.5) {
+      iconHitRegions.push({
+        faceId: face.id,
+        iconIndex: i,
+        sx: ix, sy: iy,
+        icon: icon,
+        progress: ip
+      });
+    }
+
     ctx.save();
     const lg = ctx.createLinearGradient(ex, ey, ix, iy);
     lg.addColorStop(0, hexA(boxColor, 0.6));
@@ -905,7 +1326,6 @@ function drawAR(W, H, face, locked) {
     ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(px, py); ctx.stroke();
     ctx.setLineDash([]);
 
-    // Arrowhead
     if (ip > 0.6) {
       const t = Math.min((ip - 0.6) / 0.4, 1);
       ctx.globalAlpha = ip * t;
@@ -917,59 +1337,71 @@ function drawAR(W, H, face, locked) {
     }
     ctx.restore();
 
-    // Icon bubble with pop-in + breathing
     if (ip > 0.5) {
       const t       = Math.min((ip - 0.5) / 0.5, 1);
       const sc      = easeOutBack(Math.min(ip * 1.3, 1));
       const breathe = ip >= 1 ? 1 + 0.025 * Math.sin(tick * 0.04 + i) : 1;
+
+      // Detect if this icon is the active panel icon (highlight it)
+      const isActive = activeIconHit &&
+        activeIconHit.faceId === face.id &&
+        activeIconHit.iconIndex === i;
 
       ctx.save();
       ctx.translate(ix, iy);
       ctx.scale(sc * breathe, sc * breathe);
       ctx.globalAlpha = t;
 
-      // Glowing shadow
       ctx.shadowColor = icon.color;
-      ctx.shadowBlur  = 20 + 8 * Math.sin(tick * 0.04 + i);
+      ctx.shadowBlur  = isActive ? 32 : 20 + 8 * Math.sin(tick * 0.04 + i);
 
-      // Solid dark card
-      ctx.fillStyle = 'rgba(10, 8, 24, 0.92)';
+      // Card background
+      ctx.fillStyle = isActive ? 'rgba(20,12,40,0.98)' : 'rgba(10, 8, 24, 0.92)';
       roundRect(ctx, -IS, -IS, IS*2, IS*2, 14);
       ctx.fill();
 
-      // Colored border
-      ctx.strokeStyle = icon.color;
-      ctx.lineWidth   = 2.5;
+      // Border — brighter when active
+      ctx.strokeStyle = isActive ? '#ffffff' : icon.color;
+      ctx.lineWidth   = isActive ? 3 : 2.5;
       roundRect(ctx, -IS, -IS, IS*2, IS*2, 14);
       ctx.stroke();
 
-      // Subtle color wash
+      // Tap hint ring (pulsing) when not yet active
+      if (!isActive && ip >= 1) {
+        const ringPulse = 0.4 + 0.3 * Math.sin(tick * 0.06 + i * 1.3);
+        ctx.globalAlpha = t * ringPulse * 0.5;
+        ctx.strokeStyle = icon.color;
+        ctx.lineWidth = 1.5;
+        ctx.shadowBlur = 0;
+        roundRect(ctx, -IS-6, -IS-6, IS*2+12, IS*2+12, 18);
+        ctx.stroke();
+        ctx.globalAlpha = t;
+        ctx.shadowColor = icon.color;
+        ctx.shadowBlur  = 20 + 8 * Math.sin(tick * 0.04 + i);
+      }
+
       const grad = ctx.createLinearGradient(-IS, -IS, IS, IS);
-      grad.addColorStop(0, hexA(icon.grad[0], 0.18));
-      grad.addColorStop(1, hexA(icon.grad[1], 0.08));
+      grad.addColorStop(0, hexA(icon.grad[0], isActive ? 0.3 : 0.18));
+      grad.addColorStop(1, hexA(icon.grad[1], isActive ? 0.15 : 0.08));
       ctx.fillStyle = grad; ctx.shadowBlur = 0;
       roundRect(ctx, -IS, -IS, IS*2, IS*2, 14);
       ctx.fill();
 
-      // Icon path (white with color glow)
       ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.2;
       ctx.shadowColor = icon.color; ctx.shadowBlur = 10;
       ctx.save(); ctx.translate(-10, -10); ctx.scale(20/24, 20/24);
       ctx.stroke(new Path2D(icon.path)); ctx.restore();
 
-      // Platform name
       ctx.fillStyle = 'rgba(255,255,255,0.95)';
       ctx.font = '700 9px "Space Grotesk",sans-serif';
       ctx.textAlign = 'center'; ctx.shadowBlur = 0;
       ctx.fillText(icon.label, 0, IS + 14);
 
-      // Metric value
       ctx.font = '800 13px "Nunito",sans-serif';
       ctx.fillStyle = icon.color;
       ctx.shadowColor = icon.color; ctx.shadowBlur = 6;
       ctx.fillText(icon.metricValue, 0, IS + 28);
 
-      // Metric label
       ctx.font = '500 8px "Space Grotesk",sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.shadowBlur = 0;
