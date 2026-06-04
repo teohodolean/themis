@@ -699,13 +699,14 @@ async function flipCamera() {
 
 // ─── TAP HANDLING ─────────────────────────────────────────────────────────────
 function handleTap(e) {
+  // Convert client coords → canvas pixel coords
   const rect = canvasEl.getBoundingClientRect();
-  const scaleX = canvasEl.width / rect.width;
+  const scaleX = canvasEl.width  / rect.width;
   const scaleY = canvasEl.height / rect.height;
   const tx = (e.clientX - rect.left) * scaleX;
-  const ty = (e.clientY - rect.top) * scaleY;
+  const ty = (e.clientY - rect.top)  * scaleY;
 
-  // 1. Close panel if open and click not on panel
+  // 1. Close panel if tapping outside it
   if (panelOpen) {
     const panel = document.getElementById('icon-panel');
     const pr = panel.getBoundingClientRect();
@@ -715,22 +716,24 @@ function handleTap(e) {
     return;
   }
 
-  // 2. Check icon hit regions — generous 50px tap target
-  const ICON_HIT = 50;
+  // 2. Check icon hit regions — 55px hit target in canvas pixels
+  const ICON_HIT = 55;
+  let bestHit = null, bestDist = ICON_HIT;
   for (const hit of iconHitRegions) {
     if (hit.progress < 0.5) continue;
     const dist = Math.hypot(tx - hit.sx, ty - hit.sy);
-    if (dist < ICON_HIT) {
-      activeIconHit = hit;
-      // Convert canvas coords back to screen coords for panel positioning
-      const panelX = hit.sx / scaleX + rect.left;
-      const panelY = hit.sy / scaleY + rect.top;
-      openIconPanel(hit.icon, panelX, panelY);
-      return;
-    }
+    if (dist < bestDist) { bestDist = dist; bestHit = hit; }
+  }
+  if (bestHit) {
+    activeIconHit = bestHit;
+    // Convert canvas pixel coords back to screen coords for panel placement
+    const screenX = bestHit.sx / scaleX + rect.left;
+    const screenY = bestHit.sy / scaleY + rect.top;
+    openIconPanel(bestHit.icon, screenX, screenY);
+    return;
   }
 
-  // 3. Otherwise handle face lock
+  // 3. Face lock toggle
   const pad = 24;
   let tapped = null;
   for (const f of faces) {
@@ -909,10 +912,12 @@ function renderLoop(now) {
 
       f.masterProgress = Math.min(f.masterProgress + 0.018, 1);
 
-      const staggerStep = 0.08;  // smaller step so all 8 icons animate in
+      const staggerStep = 0.08;
       f.icons.forEach((_, i) => {
         const start = i * staggerStep;
-        f.iconProgress[i] = Math.min(Math.max((f.masterProgress - start) / (1 - start * 0.4), 0), 1);
+        // Simple linear stagger: each icon starts after the previous, all reach 1.0
+        const raw = (f.masterProgress - start) / (1.0 - start);
+        f.iconProgress[i] = Math.min(Math.max(raw, 0), 1);
       });
 
       if (locked && !globalFlashShown && f.masterProgress > 0.8) {
@@ -1026,11 +1031,12 @@ function drawAR(W, H, face, locked) {
     const py = ey + (iy - ey) * ip;
 
     // Store icon hit region for click detection
+    // Store both canvas coords (for hit test) and the canvas rect context
     if (ip > 0.5) {
       iconHitRegions.push({
         faceId: face.id,
         iconIndex: i,
-        sx: ix, sy: iy,
+        sx: ix, sy: iy,   // canvas pixel coords
         icon: icon,
         progress: ip
       });
