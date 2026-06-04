@@ -194,17 +194,6 @@
   }
   #flip-btn:active { background:rgba(168,85,247,0.2); }
 
-  #capture-btn {
-    display:none; position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
-    z-index:100; width:60px; height:60px;
-    background:rgba(15,10,30,0.88); border:2px solid rgba(168,85,247,0.4);
-    cursor:pointer; align-items:center; justify-content:center;
-    border-radius:50%; backdrop-filter:blur(12px);
-    box-shadow:0 8px 28px rgba(124,58,237,0.25); user-select:none;
-    -webkit-tap-highlight-color:transparent; transition:background 0.15s;
-  }
-  #capture-btn:active { background:rgba(168,85,247,0.2); }
-  #capture-btn svg { pointer-events:none; }
 
   /* ── ICON DETAIL PANEL ── */
   #icon-panel {
@@ -362,14 +351,6 @@
   </svg>
 </button>
 
-<!-- CAPTURE / SCREENSHOT -->
-<button id="capture-btn" onclick="captureScreenshot()" title="Save screenshot">
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <defs><linearGradient id="camG" x1="0" y1="0" x2="24" y2="24"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs>
-    <path stroke="url(#camG)" d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-    <circle stroke="url(#camG)" cx="12" cy="13" r="4"/>
-  </svg>
-</button>
 
 <!-- ICON DETAIL PANEL -->
 <div id="icon-panel">
@@ -405,231 +386,14 @@ function timeAgo(){
   return pick(opts);
 }
 
-function genPhoneData(icon) {
-  const types=['in','out','miss'];
-  const durations=['0:32','1:14','2:07','4:51','0:58','7:23','12:04','0:17'];
-  const rows=[];
-  for(let i=0;i<5;i++){
-    const t=pick(types);
-    rows.push({
-      name:randName(),
-      detail: t==='miss'?'Missed call': (t==='in'?'Incoming':'Outgoing')+' · '+pick(durations),
-      type:t,
-      meta: timeAgo(),
-      metaLbl:'',
-      initColor: t==='in'?'rgba(74,222,128,0.2)':t==='out'?'rgba(168,85,247,0.2)':'rgba(248,113,113,0.2)',
-      initText: t==='in'?'#4ade80':t==='out'?'#c084fc':'#f87171'
-    });
-  }
-  const totalMin=rn(20,340);
-  return {
-    stats:[
-      {val:String(rn(80,650)),lbl:'contacts'},
-      {val:String(rn(3,18)),lbl:'calls today'},
-      {val:Math.floor(totalMin/60)+'h '+totalMin%60+'m',lbl:'call time/wk'}
-    ],
-    rows,
-    footer:'Tap a contact to call'
-  };
-}
 
-function genMessagesData(icon) {
-  const rows=[];
-  const emojis=['😂','❤️','👍','🔥','✅','🙏','😅','🤔'];
-  for(let i=0;i<5;i++){
-    const unread=rn(0,12);
-    rows.push({
-      name:randName(),
-      detail:pick(emojis)+' '+pick(['Hey!','Did you see this?','lol ok','On my way','sounds good','Can we talk?','sent a photo']),
-      type:'msg',
-      meta:unread?String(unread):'',
-      metaLbl: unread?'new':'',
-      initColor:'rgba(56,189,248,0.2)',
-      initText:'#38bdf8'
-    });
-  }
-  return {
-    stats:[
-      {val:fmtNum(rn(1,47)),lbl:'unread'},
-      {val:String(rn(8,34)),lbl:'threads'},
-      {val:String(rn(2,9)),lbl:'groups'}
-    ],
-    rows,
-    footer:'iMessage & SMS'
-  };
-}
-
-function genInstagramData(icon) {
-  const rows=[];
-  for(let i=0;i<5;i++){
-    const likes=rn(12,4800);
-    rows.push({
-      name:'@'+randName().replace(' ','').replace('.','').toLowerCase(),
-      detail:pick(['Liked your post','Started following you','Commented: "🔥🔥"','Tagged you in a story','Replied to your reel']),
-      type:'ig',
-      meta:fmtNum(likes),
-      metaLbl:'likes',
-      initColor:'rgba(244,114,182,0.2)',
-      initText:'#f472b6'
-    });
-  }
-  return {
-    stats:[
-      {val:fmtNum(rn(800,94000)),lbl:'followers'},
-      {val:fmtNum(rn(200,1200)),lbl:'following'},
-      {val:String(rn(40,820)),lbl:'posts'}
-    ],
-    rows,
-    footer:'Recent activity'
-  };
-}
-
-function genLinkedInData(icon) {
-  const roles=['Software Eng.','Product Mgr','Designer','CTO','Founder','Marketing Lead'];
-  const cos=['Google','Meta','Stripe','Acme Corp','Notion','Linear'];
-  const rows=[];
-  for(let i=0;i<5;i++){
-    rows.push({
-      name:randName(),
-      detail:pick(roles)+' at '+pick(cos),
-      type:'li',
-      meta:timeAgo(),
-      metaLbl:'viewed',
-      initColor:'rgba(96,165,250,0.2)',
-      initText:'#60a5fa'
-    });
-  }
-  return {
-    stats:[
-      {val:fmtNum(rn(200,4900)),lbl:'connections'},
-      {val:String(rn(10,180)),lbl:'endorsements'},
-      {val:fmtNum(rn(300,12000)),lbl:'profile views'}
-    ],
-    rows,
-    footer:'Recent profile visitors'
-  };
-}
-
-function genXData(icon) {
-  const rows=[];
-  for(let i=0;i<5;i++){
-    const likes=rn(5,3200);
-    rows.push({
-      name:'@'+randName().replace(' ','').replace('.','').toLowerCase(),
-      detail:pick(['Retweeted your post','Liked your reply','Quoted your thread','Mentioned you','Started following']),
-      type:'x',
-      meta:fmtNum(likes),
-      metaLbl:'',
-      initColor:'rgba(226,232,240,0.15)',
-      initText:'#e2e8f0'
-    });
-  }
-  return {
-    stats:[
-      {val:fmtNum(rn(50,12000)),lbl:'followers'},
-      {val:String(rn(800,28000)),lbl:'tweets'},
-      {val:fmtNum(rn(200,9000)),lbl:'impressions/mo'}
-    ],
-    rows,
-    footer:'Recent interactions'
-  };
-}
-
-function genTikTokData(icon) {
-  const rows=[];
-  for(let i=0;i<5;i++){
-    rows.push({
-      name:'@'+randName().replace(' ','').replace('.','').toLowerCase(),
-      detail:pick(['Dueted your video','Liked 3 of your videos','Left a comment','Shared to story','Followed you']),
-      type:'tt',
-      meta:fmtNum(rn(500,88000)),
-      metaLbl:'views',
-      initColor:'rgba(249,168,212,0.2)',
-      initText:'#f9a8d4'
-    });
-  }
-  return {
-    stats:[
-      {val:fmtNum(rn(1200,880000)),lbl:'likes'},
-      {val:fmtNum(rn(400,95000)),lbl:'followers'},
-      {val:String(rn(12,280)),lbl:'videos'}
-    ],
-    rows,
-    footer:'Recent activity'
-  };
-}
-
-function genWebsiteData(icon) {
-  const pages=['/blog','/','/about','/projects','/contact','/portfolio'];
-  const refs=['google.com','twitter.com','linkedin.com','direct','github.com'];
-  const rows=[];
-  for(let i=0;i<5;i++){
-    const v=rn(80,4200);
-    rows.push({
-      name:pick(pages),
-      detail:'via '+pick(refs),
-      type:'web',
-      meta:fmtNum(v),
-      metaLbl:'visits',
-      initColor:'rgba(251,191,36,0.2)',
-      initText:'#fbbf24'
-    });
-  }
-  return {
-    stats:[
-      {val:fmtNum(rn(500,48000)),lbl:'monthly visits'},
-      {val:String(rn(1,12))+'s',lbl:'avg. time'},
-      {val:String(rn(28,74))+'%',lbl:'bounce rate'}
-    ],
-    rows,
-    footer:'Google Analytics · last 30 days'
-  };
-}
-
-function genNFCData(icon) {
-  const devices=['iPhone 15','AirDrop','Android','MacBook','NFC Tag'];
-  const actions=['Shared contact','Shared social links','Opened portfolio','Shared vCard','Tapped payment'];
-  const rows=[];
-  for(let i=0;i<5;i++){
-    rows.push({
-      name:randName(),
-      detail:pick(actions)+' via '+pick(devices),
-      type:'nfc',
-      meta:timeAgo(),
-      metaLbl:'',
-      initColor:'rgba(192,132,252,0.2)',
-      initText:'#c084fc'
-    });
-  }
-  return {
-    stats:[
-      {val:String(rn(5,320)),lbl:'total shares'},
-      {val:String(rn(1,12)),lbl:'this week'},
-      {val:String(rn(2,8)),lbl:'devices paired'}
-    ],
-    rows,
-    footer:'Wireless contact sharing'
-  };
-}
-
-const DATA_GEN = {
-  'Phone':    genPhoneData,
-  'Messages': genMessagesData,
-  'Instagram':genInstagramData,
-  'LinkedIn': genLinkedInData,
-  'X':        genXData,
-  'TikTok':   genTikTokData,
-  'Website':  genWebsiteData,
-  'NFC':      genNFCData,
-};
 
 // ─── PANEL RENDERING ──────────────────────────────────────────────────────────
+
 let panelOpen = false;
 
 function openIconPanel(icon, screenX, screenY) {
-  const gen = DATA_GEN[icon.label];
-  if (!gen) return;
-  const data = gen(icon);
+  const popupText = ICON_POPUPS[icon.label] || 'No information available.';
 
   // Header
   document.getElementById('panel-icon-wrap').style.background =
@@ -640,57 +404,28 @@ function openIconPanel(icon, screenX, screenY) {
   document.getElementById('panel-title').style.color = icon.color;
   document.getElementById('panel-subtitle').textContent = icon.metricValue + ' ' + icon.metricLabel;
 
-  // Stats
+  // Stats — hide it
   const statEl = document.getElementById('panel-stat');
-  statEl.innerHTML = data.stats.map(s=>`
-    <div class="pstat" style="flex:1">
-      <div class="pstat-val" style="color:${icon.color}">${s.val}</div>
-      <div class="pstat-lbl">${s.lbl}</div>
-    </div>
-  `).join('<div style="width:1px;background:rgba(255,255,255,0.07);height:32px;align-self:center"></div>');
+  statEl.innerHTML = '';
+  statEl.style.display = 'none';
 
-  // Rows
+  // Rows — show popup text
   const rowsEl = document.getElementById('panel-rows');
-  rowsEl.innerHTML = data.rows.map(r => {
-    const initials = r.name.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
-    let metaHtml = '';
-    if (r.type === 'in') metaHtml = `<span class="pill pill-in">Incoming</span>`;
-    else if (r.type === 'out') metaHtml = `<span class="pill pill-out">Outgoing</span>`;
-    else if (r.type === 'miss') metaHtml = `<span class="pill pill-miss">Missed</span>`;
-    else if (r.meta) metaHtml = `<div class="prow-meta-val" style="color:${icon.color}">${r.meta}</div>${r.metaLbl?`<div class="prow-meta-lbl">${r.metaLbl}</div>`:''}`;
+  const lines = popupText.split('\n');
+  rowsEl.innerHTML = `<div style="padding:14px 16px 10px;line-height:1.75;font-size:12.5px;color:rgba(241,245,249,0.85)">${
+    lines.map(l => `<div style="margin-bottom:2px">${l}</div>`).join('')
+  }</div>`;
 
-    return `<div class="prow">
-      <div class="prow-avatar" style="background:${r.initColor};color:${r.initText}">${initials}</div>
-      <div style="min-width:0;flex:1">
-        <div class="prow-name">${r.name}</div>
-        <div class="prow-detail">${r.detail}</div>
-      </div>
-      <div class="prow-meta" style="min-width:60px">${metaHtml}</div>
-    </div>`;
-  }).join('');
+  document.getElementById('panel-footer').textContent = '';
 
-  // For phone calls: add time metadata
-  if (icon.label === 'Phone') {
-    const pillRows = rowsEl.querySelectorAll('.prow');
-    data.rows.forEach((r,i)=>{
-      const metaDiv = pillRows[i].querySelector('.prow-meta');
-      const timeDiv = document.createElement('div');
-      timeDiv.style.cssText = 'font-size:10px;color:rgba(255,255,255,0.3);margin-top:3px;text-align:right';
-      timeDiv.textContent = r.meta;
-      metaDiv.appendChild(timeDiv);
-    });
-  }
-
-  document.getElementById('panel-footer').textContent = data.footer;
-
-  // Position panel smart — avoid going off screen
+  // Position panel
   const panel = document.getElementById('icon-panel');
   panel.style.display = 'block';
   panel.style.animation = 'none';
   panel.offsetHeight; // reflow
   panel.style.animation = 'panelPop 0.22s cubic-bezier(0.34,1.56,0.64,1) forwards';
 
-  const PW = 270, PH = 340;
+  const PW = 270, PH = 260;
   let px = screenX - PW / 2;
   let py = screenY - PH - 16;
   if (px < 8) px = 8;
@@ -710,31 +445,42 @@ function closePanel() {
 }
 
 // ─── ICONS ────────────────────────────────────────────────────────────────────
+const ICON_POPUPS = {
+  'Facebook':   'Content data\nArt. 3(12)\nNotification\nUsually YES - Art. 8(1). Exceptionally NO - domestic offence - Art. 8(2)',
+  'WhatsApp':   'Traffic data - source,  destination, duration of calls - Art. 3(11)\nNotification - Usually YES - Art. 8(1). Exceptionally NO - domestic case - Art. 8(2)\nEPOC only if:\n- 3 years threshold - Art. 4(a)\n- ⁠ specific offences - Art. 4 (b),(c)\n- ⁠execution of a custodial sentence or detention order of at least 4 months - Art. 4 (d)',
+  'Google Maps':'tbd3',
+  'Website':    'tbd4',
+  'Telegram':   'tbd5',
+  'Telekom':    'tbd6',
+  'TikTok':     'tbd7',
+  'Instagram':  'tbd8',
+};
+
 const ALL_ICONS = [
-  { label:'Messages',  color:'#38bdf8', grad:['#38bdf8','#6366f1'],
-    path:'M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-    metricLabel:'unread', min:1, max:47 },
-  { label:'Instagram', color:'#f472b6', grad:['#f472b6','#fb923c'],
-    path:'M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01M7.8 2h8.4A5.8 5.8 0 0122 7.8v8.4A5.8 5.8 0 0116.2 22H7.8A5.8 5.8 0 012 16.2V7.8A5.8 5.8 0 017.8 2z',
-    metricLabel:'followers', min:800, max:94000 },
-  { label:'LinkedIn',  color:'#60a5fa', grad:['#60a5fa','#818cf8'],
-    path:'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2zM4 6a2 2 0 100-4 2 2 0 000 4z',
-    metricLabel:'connections', min:200, max:4900 },
-  { label:'X',         color:'#e2e8f0', grad:['#e2e8f0','#94a3b8'],
-    path:'M4 4l16 16M4 20L20 4',
-    metricLabel:'followers', min:50, max:12000 },
-  { label:'TikTok',    color:'#f9a8d4', grad:['#f9a8d4','#fb7185'],
+  { label:'Facebook',    color:'#60a5fa', grad:['#1877f2','#60a5fa'],
+    path:'M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z',
+    metricLabel:'messages unread', min:1, max:999 },
+  { label:'WhatsApp',    color:'#4ade80', grad:['#25d366','#4ade80'],
+    path:'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z',
+    metricLabel:'history calls', min:1, max:999 },
+  { label:'Google Maps', color:'#f87171', grad:['#ea4335','#f87171'],
+    path:'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
+    metricLabel:'visited places', min:1, max:200 },
+  { label:'Website',     color:'#fbbf24', grad:['#fbbf24','#f97316'],
+    path:'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9',
+    metricLabel:'monthly searches', min:1, max:9999 },
+  { label:'Telegram',    color:'#38bdf8', grad:['#229ed9','#38bdf8'],
+    path:'M21 3L3 10.53v.98l6.84 2.65L13.79 21h.98L21 3z',
+    metricLabel:'photos', min:1, max:9999 },
+  { label:'Telekom',     color:'#e84393', grad:['#e20074','#e84393'],
+    path:'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498A1 1 0 0121 15.72V19a2 2 0 01-2 2A17 17 0 013 5z',
+    metricLabel:'billing & payments', min:1, max:999 },
+  { label:'TikTok',      color:'#f9a8d4', grad:['#f9a8d4','#fb7185'],
     path:'M9 12a4 4 0 104 4V4a5 5 0 005 5',
     metricLabel:'likes', min:1200, max:880000 },
-  { label:'Phone',     color:'#4ade80', grad:['#4ade80','#34d399'],
-    path:'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498A1 1 0 0121 15.72V19a2 2 0 01-2 2A17 17 0 013 5z',
-    metricLabel:'contacts', min:80, max:650 },
-  { label:'Website',   color:'#fbbf24', grad:['#fbbf24','#f97316'],
-    path:'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9',
-    metricLabel:'monthly visits', min:500, max:48000 },
-  { label:'NFC',       color:'#c084fc', grad:['#c084fc','#a78bfa'],
-    path:'M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0',
-    metricLabel:'shares', min:5, max:320 },
+  { label:'Instagram',   color:'#f472b6', grad:['#f472b6','#fb923c'],
+    path:'M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01M7.8 2h8.4A5.8 5.8 0 0122 7.8v8.4A5.8 5.8 0 0116.2 22H7.8A5.8 5.8 0 012 16.2V7.8A5.8 5.8 0 017.8 2z',
+    metricLabel:'tbd', min:100, max:99000 },
 ];
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
@@ -860,7 +606,6 @@ async function startCamera() {
 
   document.getElementById('zoom-ctrl').style.display    = 'flex';
   document.getElementById('flip-btn').style.display     = 'flex';
-  document.getElementById('capture-btn').style.display  = 'flex';
 
   setInterval(runDetection, 120);
   lastFrameTime = performance.now();
@@ -992,43 +737,15 @@ function handleTap(e) {
   lockedFaceId = (tapped && tapped.id === lockedFaceId) ? -1 : (tapped ? tapped.id : lockedFaceId);
 }
 
-// ─── SCREENSHOT ───────────────────────────────────────────────────────────────
-function captureScreenshot() {
-  const W = canvasEl.width, H = canvasEl.height;
-  const tmp = document.createElement('canvas');
-  tmp.width = W; tmp.height = H;
-  const tc = tmp.getContext('2d');
-  tc.save();
-  tc.translate(W / 2, H / 2);
-  if (isFrontCamera) tc.scale(-1, 1);
-  if (!nativeZoomSupported && zoomLevel > 1) tc.scale(zoomLevel, zoomLevel);
-  tc.translate(-W / 2, -H / 2);
-  tc.drawImage(videoEl, 0, 0, W, H);
-  tc.restore();
-  tc.drawImage(canvasEl, 0, 0);
-  tmp.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'facelink-' + Date.now() + '.png';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 5000);
-  }, 'image/png');
-  const flash = document.createElement('div');
-  flash.style.cssText = 'position:fixed;inset:0;background:#fff;opacity:0.45;z-index:9999;pointer-events:none;transition:opacity 0.4s';
-  document.body.appendChild(flash);
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    flash.style.opacity = '0';
-    setTimeout(() => flash.remove(), 400);
-  }));
-}
 
 // ─── ICON PICK ────────────────────────────────────────────────────────────────
 function pickIconsForFace() {
-  const count = 4 + Math.floor(Math.random() * 5);
-  const icons = [...ALL_ICONS]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, count)
-    .map(ic => ({ ...ic, metricValue: fmtNum(rn(ic.min, ic.max)) }));
+  const icons = ALL_ICONS.map(ic => {
+    let max = ic.max;
+    // Cap Google Maps at 200
+    if (ic.label === 'Google Maps') max = 200;
+    return { ...ic, metricValue: fmtNum(rn(ic.min, max)) };
+  });
   return { icons, iconProgress: icons.map(() => 0) };
 }
 
