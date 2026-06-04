@@ -425,7 +425,7 @@ function openIconPanel(icon, screenX, screenY) {
   panel.offsetHeight; // reflow
   panel.style.animation = 'panelPop 0.22s cubic-bezier(0.34,1.56,0.64,1) forwards';
 
-  const PW = 270, PH = 260;
+  const PW = 270, PH = 280;
   let px = screenX - PW / 2;
   let py = screenY - PH - 16;
   if (px < 8) px = 8;
@@ -461,7 +461,7 @@ const ALL_ICONS = [
     path:'M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z',
     metricLabel:'messages unread', min:1, max:999 },
   { label:'WhatsApp',    color:'#4ade80', grad:['#25d366','#4ade80'],
-    path:'M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z',
+    path:'M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.37 5.07L2 22l5.07-1.35A9.93 9.93 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm-1 14.5l-.38-.03c-1.13-.08-2.19-.5-3.06-1.19l-2.12.56.57-2.06A7.02 7.02 0 015 12c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7zm3.5-5.25c-.19-.1-1.13-.56-1.31-.62-.17-.06-.3-.1-.42.1-.12.19-.48.62-.59.75-.11.12-.22.14-.41.05-.19-.1-.8-.29-1.52-.93-.56-.5-.94-1.11-1.05-1.3-.11-.19-.01-.29.08-.38.08-.08.19-.22.28-.33.1-.11.13-.19.19-.31.07-.12.03-.23-.01-.33-.05-.1-.42-1.01-.58-1.38-.15-.37-.31-.32-.43-.32h-.36c-.12 0-.32.05-.49.23-.17.17-.64.63-.64 1.54 0 .9.66 1.78.75 1.9.1.12 1.29 1.97 3.13 2.76.44.19.78.3 1.04.38.44.14.84.12 1.15.07.35-.05 1.08-.44 1.23-.87.15-.43.15-.8.1-.87-.04-.07-.17-.12-.36-.21z',
     metricLabel:'history calls', min:1, max:999 },
   { label:'Google Maps', color:'#f87171', grad:['#ea4335','#f87171'],
     path:'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z',
@@ -700,8 +700,10 @@ async function flipCamera() {
 // ─── TAP HANDLING ─────────────────────────────────────────────────────────────
 function handleTap(e) {
   const rect = canvasEl.getBoundingClientRect();
-  const tx = e.clientX - rect.left;
-  const ty = e.clientY - rect.top;
+  const scaleX = canvasEl.width / rect.width;
+  const scaleY = canvasEl.height / rect.height;
+  const tx = (e.clientX - rect.left) * scaleX;
+  const ty = (e.clientY - rect.top) * scaleY;
 
   // 1. Close panel if open and click not on panel
   if (panelOpen) {
@@ -713,14 +715,17 @@ function handleTap(e) {
     return;
   }
 
-  // 2. Check icon hit regions (icons are 30px radius tap target)
-  const ICON_HIT = 38;
+  // 2. Check icon hit regions — generous 50px tap target
+  const ICON_HIT = 50;
   for (const hit of iconHitRegions) {
     if (hit.progress < 0.5) continue;
     const dist = Math.hypot(tx - hit.sx, ty - hit.sy);
     if (dist < ICON_HIT) {
       activeIconHit = hit;
-      openIconPanel(hit.icon, hit.sx, hit.sy);
+      // Convert canvas coords back to screen coords for panel positioning
+      const panelX = hit.sx / scaleX + rect.left;
+      const panelY = hit.sy / scaleY + rect.top;
+      openIconPanel(hit.icon, panelX, panelY);
       return;
     }
   }
@@ -904,10 +909,10 @@ function renderLoop(now) {
 
       f.masterProgress = Math.min(f.masterProgress + 0.018, 1);
 
-      const staggerStep = 0.15;
+      const staggerStep = 0.08;  // smaller step so all 8 icons animate in
       f.icons.forEach((_, i) => {
         const start = i * staggerStep;
-        f.iconProgress[i] = Math.min(Math.max((f.masterProgress - start) / (1 - start * 0.5), 0), 1);
+        f.iconProgress[i] = Math.min(Math.max((f.masterProgress - start) / (1 - start * 0.4), 0), 1);
       });
 
       if (locked && !globalFlashShown && f.masterProgress > 0.8) {
